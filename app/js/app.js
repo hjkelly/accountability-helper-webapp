@@ -2,15 +2,19 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('myApp', [
+angular.module('accountabilityHelper', [
   'ngRoute',
-  'myApp.filters',
-  'myApp.services',
-  'myApp.directives',
-  'myApp.controllers'
+  'accountabilityHelper.filters',
+  'accountabilityHelper.services',
+  'accountabilityHelper.directives',
+  'accountabilityHelper.controllers'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/view1', {templateUrl: 'partials/partial1.html', controller: 'MyCtrl1'});
-  $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
+  $routeProvider.when('/welcome', {templateUrl: 'partials/welcome.html', controller: 'WelcomeCtrl'});
+  $routeProvider.when('/login', {templateUrl: 'partials/login.html', controller: 'LoginCtrl'});
+  $routeProvider.when('/register', {templateUrl: 'partials/register.html', controller: 'RegisterCtrl'});
+  $routeProvider.when('/overview', {templateUrl: 'partials/overview.html', controller: 'OverviewCtrl'});
+  $routeProvider.when('/submit-checkin', {templateUrl: 'partials/submit-checkin.html', controller: 'SubmitCheckinCtrl'});
+  $routeProvider.when('/settings', {templateUrl: 'partials/settings.html', controller: 'SettingsCtrl'});
   $routeProvider.otherwise({redirectTo: '/view1'});
 }]);
