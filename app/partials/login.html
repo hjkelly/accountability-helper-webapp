@@ -1,1 +1,7 @@
-<p>This is the partial for view 1.</p>
+<h1>Log In</h1>
+<p>Enter your email and password to log in.</p>
+<form>
+    <div><input type="email" ng-model="user.email" /></div>
+    <div><input type="password" ng-model="user.password" /></div>
+    <div><button ng-click="attemptLogin(user)">Log In</button></div>
+</form>

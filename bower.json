@@ -9,7 +9,9 @@
     "angular": "1.2.x",
     "angular-route": "1.2.x",
     "angular-loader": "1.2.x",
+    "angular-cookies": "1.2.20",
     "angular-mocks": "~1.2.x",
+    "angular-base64": "~2.0.x",
     "html5-boilerplate": "~4.3.0"
   }
 }

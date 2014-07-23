@@ -16,5 +16,5 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/overview', {templateUrl: 'partials/overview.html', controller: 'OverviewCtrl'});
   $routeProvider.when('/submit-checkin', {templateUrl: 'partials/submit-checkin.html', controller: 'SubmitCheckinCtrl'});
   $routeProvider.when('/settings', {templateUrl: 'partials/settings.html', controller: 'SettingsCtrl'});
-  $routeProvider.otherwise({redirectTo: '/view1'});
+  $routeProvider.otherwise({redirectTo: '/welcome'});
 }]);
