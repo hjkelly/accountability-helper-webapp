@@ -1,7 +1,7 @@
 <h1>Register</h1>
 <p>Enter your email and a password to create your account.</p>
-<form>
+<form ng-submit="attemptRegistration(user)">
     <div><input type="email" ng-model="user.email" /></div>
     <div><input type="password" ng-model="user.password" /></div>
-    <div><button ng-click="attemptRegistration(user)">Log In</button></div>
+    <div><input type="submit" value="Register" /></div>
 </form>

@@ -1,1 +1,7 @@
-<p>This is the partial for view 1.</p>
+<h2>Checkin History</h2>
+<ul ng-show="pastCheckins.length">
+    <li ng-repeat="c in pastCheckins">{{c.status}} &mdash; {{c.timestamp}}</li>
+</ul>
+<p ng-show="!pastCheckins.length">
+    You haven't checked in yet!
+</p>

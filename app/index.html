@@ -16,7 +16,7 @@
 </head>
 <body>
   <ul class="menu">
-    <li ng-show="myEmail || myJwt">{{myEmail}} &mdash; <a href="#/settings">Settings</a> <a href="#" ng-click="logOut()">Log Out</li>
+    <li ng-show="myEmail || myJwt">{{myEmail}} &mdash; <a href="#/settings">Settings</a> <a href="#" ng-click="logOut()">Log Out</a></li>
     <li ng-show="!(myEmail || myJwt)"><a href="#/register">Register</a> <a href="#/login">Log In</a></li>
   </ul>
 
