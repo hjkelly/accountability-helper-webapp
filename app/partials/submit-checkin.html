@@ -1,1 +1,16 @@
-<p>This is the partial for view 1.</p>
+<form ng-submit="submitCheckin(checkin)">
+    <p>
+        How have things been since 
+        <span ng-show="!lastCheckinTimestamp">you signed up?</span>
+        <span ng-show="lastCheckinTimestamp">your last checkin, {{ lastCheckinTimestamp }}?</span>
+    </p>
+    <div>
+        <select ng-model="checkin.status">
+            <option></option>
+            <option value="0">No temptation</option>
+            <option value="1">Being tempted, but resisting</option>
+            <option value="2">Indulging temptation</option>
+        </select>
+    </div>
+    <div><input type="submit" /></div>
+</form>
