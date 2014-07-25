@@ -7,9 +7,7 @@
     <div>
         <select ng-model="checkin.status">
             <option></option>
-            <option value="0">No temptation</option>
-            <option value="1">Being tempted, but resisting</option>
-            <option value="2">Indulging temptation</option>
+            <option ng-repeat="s in checkinStatuses" value="{{s.value}}">{{s.label}}</option>
         </select>
     </div>
     <div><input type="submit" /></div>

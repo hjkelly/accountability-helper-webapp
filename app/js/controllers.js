@@ -5,7 +5,7 @@
 var baseUrl = "http://localhost:8001";
 
 angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
-    .run(["$rootScope", "$cookies", function ($rootScope, $cookies) {
+    .run(["$rootScope", "$cookies", "$http", function ($rootScope, $cookies, $http) {
         // Retrieve email and JSON Web Token from the cookie, if they have them.
         $rootScope.myJwt = $cookies.jwt;
         $rootScope.myEmail = $cookies.email;
@@ -18,6 +18,14 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
             delete $cookies.jwt;
             delete $cookies.email;
         };
+        // Get the statuses available to submit.
+        $http({method: "GET", url: baseUrl+"/checkins/statuses"})
+            .success(function(data, status, headers, config) {
+                $rootScope.checkinStatuses = data;
+            })
+            .error(function(data, status, headers, config) {
+                alert("failure getting statuses");
+            });
     }])
     .controller("WelcomeCtrl", ["$scope", function($scope) {
 
