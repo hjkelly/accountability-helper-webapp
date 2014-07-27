@@ -7,7 +7,7 @@
     <div>
         <select ng-model="checkin.status">
             <option></option>
-            <option ng-repeat="s in checkinStatuses" value="{{s.value}}">{{s.label}}</option>
+            <option ng-repeat="s in checkinStatuses" value="{{$index}}">{{s}}</option>
         </select>
     </div>
     <div><input type="submit" /></div>
