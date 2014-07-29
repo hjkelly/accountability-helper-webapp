@@ -71,7 +71,7 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
     }])
     .controller("OverviewCtrl", ["$scope", "$http", "$rootScope", function($scope, $http, $rootScope) {
         $http({method: "GET", url: baseUrl+"/checkins",
-                headers: {"Authorization": "JWT "+$rootScope.myJwt}})
+               headers: {"Authorization": "JWT "+$rootScope.myJwt}})
             .success(function(data, status, headers, config) {
                 $scope.pastCheckins = data;
             })
@@ -107,6 +107,26 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 });
         };
     }])
-    .controller("SettingsCtrl", ["$scope", function($scope) {
-
+    .controller("SettingsCtrl", ["$scope", "$http", "$location", "$rootScope", function($scope, $http, $location, $rootScope) {
+        // Get the existing list of partners.
+        $http({method: "GET", url: baseUrl+"/partners",
+               headers: {"Authorization": "JWT "+$rootScope.myJwt}})
+            .success(function(data, status, headers, config) {
+                $scope.partnerEmails = data;
+            })
+            .error(function(data, status, headers, config) {
+                alert("failure to get partners");
+            });
+        // Give them a way to update them.
+        $scope.submitPartners = function (partnerEmails) {
+            $http({method: "POST", url: baseUrl+"/partners",
+                   headers: {"Authorization": "JWT "+$rootScope.myJwt},
+                   data: partnerEmails})
+                .success(function(data, status, headers, config) {
+                    $location.path("/overview");
+                })
+                .error(function(data, status, headers, config) {
+                    alert("failure");
+                });
+        };
     }]);
