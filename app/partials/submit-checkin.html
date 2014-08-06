@@ -5,7 +5,7 @@
         <span ng-show="lastCheckinTimestamp">your last checkin, {{ lastCheckinTimestamp }}?</span>
     </p>
     <div>
-        <select ng-model="checkin.status">
+        <select ng-model="checkin.statusValue">
             <option></option>
             <option ng-repeat="s in checkinStatuses" value="{{$index}}">{{s}}</option>
         </select>

@@ -2,7 +2,7 @@
 
 /* Controllers */
 
-var baseUrl = "http://localhost:8001";
+var baseUrl = require('../../config').baseUrl;
 
 angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
     .run(["$rootScope", "$cookies", "$http", function ($rootScope, $cookies, $http) {
@@ -27,8 +27,11 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 alert("failure getting statuses");
             });
     }])
-    .controller("WelcomeCtrl", ["$scope", function($scope) {
-
+    .controller("WelcomeCtrl", ["$scope", "$location", "$rootScope", function($scope, $location, $rootScope) {
+        // If they"re logged in, kick them to the overview. TODO: Make this
+        // friendlier? Maybe they want to get to the homepage!
+        if ($rootScope.myEmail || $rootScope.myJwt)
+            $location.path("/overview");
     }])
     .controller("LoginCtrl", ["$scope", "$http", "$cookies", "$location", "$rootScope", "$base64", function($scope, $http, $cookies, $location, $rootScope, $base64) {
         // If they"re logged in, kick them to the overview.
@@ -96,9 +99,13 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
             });
         // Give them a way to submit it.
         $scope.submitCheckin = function (checkin) {
+            // We need the label as well, so fetch it!
+            checkin.statusValue = parseInt(checkin.statusValue, 10);
+            checkin.statusLabel = $rootScope.checkinStatuses[checkin.statusValue];
+            // Submit the checkin with the label and value.
             $http({method: "POST", url: baseUrl+"/checkins",
                    headers: {"Authorization": "JWT "+$rootScope.myJwt},
-                   data: {"status": checkin.status}})
+                   data: checkin})
                 .success(function(data, status, headers, config) {
                     $location.path("/overview");
                 })
