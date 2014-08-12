@@ -1,0 +1,32 @@
+---
+- hosts: webservers
+  remote_user: webserver
+  sudo: yes
+  vars:
+  - local_path: ..
+  - remote_dir: /srv
+  - remote_path: /srv/webapp
+  - api_base_url: 'http://162.243.231.102:3000'
+  - nginx_user: webserver
+  - nginx_sites:
+      default:
+      - listen 80
+      - root {{remote_path}}
+  - nginx_configs:
+      http:
+      - types_hash_max_size 2048
+  roles:
+  - JasonGiedymin.nodejs
+  - jdauphant.nginx
+  tasks:
+  # Prepare the project on the server -----------------------------------------
+  - name: make sure the destination directory has proper permissions
+    file: path={{remote_dir}} recurse=yes owner=webserver group=webserver
+  - name: copy files to the server
+    sudo: no
+    synchronize: src={{local_path}} dest={{remote_path}} rsync_opts='--exclude-from=synchronize-excludes.txt'
+  - name: configure the project
+    template: src={{local_path}}/app/js/app.template.js dest={{remote_path}}/app/js/app.js backup=yes
+  # Prepare the server itself -------------------------------------------------
+  - name: install dependencies
+    npm: path={{remote_path}} state=latest

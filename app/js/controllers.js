@@ -2,10 +2,8 @@
 
 /* Controllers */
 
-var baseUrl = require('../../config').baseUrl;
-
 angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
-    .run(["$rootScope", "$cookies", "$http", function ($rootScope, $cookies, $http) {
+    .run(["$rootScope", "$cookies", "$http", "apiBaseUrl", function ($rootScope, $cookies, $http, apiBaseUrl) {
         // Retrieve email and JSON Web Token from the cookie, if they have them.
         $rootScope.myJwt = $cookies.jwt;
         $rootScope.myEmail = $cookies.email;
@@ -19,7 +17,7 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
             delete $cookies.email;
         };
         // Get the statuses available to submit.
-        $http({method: "GET", url: baseUrl+"/checkins/statuses"})
+        $http({method: "GET", url: apiBaseUrl+"/checkins/statuses"})
             .success(function(data, status, headers, config) {
                 $rootScope.checkinStatuses = data;
             })
@@ -33,13 +31,13 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
         if ($rootScope.myEmail || $rootScope.myJwt)
             $location.path("/overview");
     }])
-    .controller("LoginCtrl", ["$scope", "$http", "$cookies", "$location", "$rootScope", "$base64", function($scope, $http, $cookies, $location, $rootScope, $base64) {
+    .controller("LoginCtrl", ["$scope", "$http", "$cookies", "$location", "$rootScope", "$base64", "apiBaseUrl", function($scope, $http, $cookies, $location, $rootScope, $base64, apiBaseUrl) {
         // If they"re logged in, kick them to the overview.
         if ($rootScope.myEmail || $rootScope.myJwt)
             $location.path("/overview");
         // Attempt the log in with a given user model (on the page)
         $scope.attemptLogin = function (user) {
-            $http({method: "GET", url: baseUrl+"/users",
+            $http({method: "GET", url: apiBaseUrl+"/users",
                    headers: {"Authorization": "Basic "+$base64.encode(user.email+":"+user.password)}})
                 .success(function(data, status, headers, config) {
                     var jwt = data[0].jwt;
@@ -52,14 +50,14 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 });
         };
     }])
-    .controller("RegisterCtrl", ["$scope", "$http", "$cookies", "$location", "$rootScope", function($scope, $http, $cookies, $location, $rootScope) {
+    .controller("RegisterCtrl", ["$scope", "$http", "$cookies", "$location", "$rootScope", "apiBaseUrl", function($scope, $http, $cookies, $location, $rootScope, apiBaseUrl) {
         // If they"re logged in, kick them to the overview.
         if ($rootScope.myEmail || $rootScope.myJwt)
             $location.path("/overview");
         // Attempt the registration with the given user model (on the page)
         $scope.attemptRegistration = function (user) {
             $http({method: "POST",
-                   url: baseUrl+"/users",
+                   url: apiBaseUrl+"/users",
                    data: {email: user.email, password: user.password}})
                 .success(function(data, status, headers, config) {
                     var jwt = data.jwt;
@@ -72,8 +70,8 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 });
         };
     }])
-    .controller("OverviewCtrl", ["$scope", "$http", "$rootScope", function($scope, $http, $rootScope) {
-        $http({method: "GET", url: baseUrl+"/checkins",
+    .controller("OverviewCtrl", ["$scope", "$http", "$rootScope", "apiBaseUrl", function($scope, $http, $rootScope, apiBaseUrl) {
+        $http({method: "GET", url: apiBaseUrl+"/checkins",
                headers: {"Authorization": "JWT "+$rootScope.myJwt}})
             .success(function(data, status, headers, config) {
                 $scope.pastCheckins = data;
@@ -82,9 +80,9 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 alert("failure");
             });
     }])
-    .controller("SubmitCheckinCtrl", ["$scope", "$http", "$location", "$rootScope", function($scope, $http, $location, $rootScope) {
+    .controller("SubmitCheckinCtrl", ["$scope", "$http", "$location", "$rootScope", "apiBaseUrl", function($scope, $http, $location, $rootScope, apiBaseUrl) {
         // Provide the last checkin"s timestamp.
-        $http({method: "GET", url: baseUrl+"/checkins",
+        $http({method: "GET", url: apiBaseUrl+"/checkins",
                headers: {"Authorization": "JWT "+$rootScope.myJwt}})
             .success(function(data, status, headers, config) {
                 if (data.length) {
@@ -103,7 +101,7 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
             checkin.statusValue = parseInt(checkin.statusValue, 10);
             checkin.statusLabel = $rootScope.checkinStatuses[checkin.statusValue];
             // Submit the checkin with the label and value.
-            $http({method: "POST", url: baseUrl+"/checkins",
+            $http({method: "POST", url: apiBaseUrl+"/checkins",
                    headers: {"Authorization": "JWT "+$rootScope.myJwt},
                    data: checkin})
                 .success(function(data, status, headers, config) {
@@ -114,9 +112,9 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 });
         };
     }])
-    .controller("SettingsCtrl", ["$scope", "$http", "$location", "$rootScope", function($scope, $http, $location, $rootScope) {
+    .controller("SettingsCtrl", ["$scope", "$http", "$location", "$rootScope", "apiBaseUrl", function($scope, $http, $location, $rootScope, apiBaseUrl) {
         // Get the existing list of partners.
-        $http({method: "GET", url: baseUrl+"/partners",
+        $http({method: "GET", url: apiBaseUrl+"/partners",
                headers: {"Authorization": "JWT "+$rootScope.myJwt}})
             .success(function(data, status, headers, config) {
                 $scope.partnerEmails = data;
@@ -126,7 +124,7 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
             });
         // Give them a way to update them.
         $scope.submitPartners = function (partnerEmails) {
-            $http({method: "POST", url: baseUrl+"/partners",
+            $http({method: "POST", url: apiBaseUrl+"/partners",
                    headers: {"Authorization": "JWT "+$rootScope.myJwt},
                    data: partnerEmails})
                 .success(function(data, status, headers, config) {
