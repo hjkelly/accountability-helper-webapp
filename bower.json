@@ -12,6 +12,7 @@
     "angular-cookies": "1.2.20",
     "angular-mocks": "~1.2.x",
     "angular-base64": "~2.0.x",
+    "angular-bootstrap": "~0.11.0",
     "html5-boilerplate": "~4.3.0"
   }
 }

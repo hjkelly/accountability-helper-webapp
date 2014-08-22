@@ -3,26 +3,33 @@
 /* Controllers */
 
 angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
-    .run(["$rootScope", "$cookies", "$http", "apiBaseUrl", function ($rootScope, $cookies, $http, apiBaseUrl) {
+    .run(["$rootScope", "$location", "$cookies", "$http", "apiBaseUrl", function ($rootScope, $location, $cookies, $http, apiBaseUrl) {
         // Retrieve email and JSON Web Token from the cookie, if they have them.
         $rootScope.myJwt = $cookies.jwt;
         $rootScope.myEmail = $cookies.email;
         // Add a "log out" function from anywhere in the app.
-        // TODO: Should this be part of a separate controller/view in the menu
-        // portion of the page?
         $rootScope.logOut = function () {
+            console.log("logging out with rootScope vars:");
+            console.log($rootScope);
             delete $rootScope.myJwt;
             delete $rootScope.myEmail;
             delete $cookies.jwt;
             delete $cookies.email;
+            console.log("redirecting! with rootScope vars:");
+            console.log($rootScope);
+            $location.path("/login");
         };
         // Get the statuses available to submit.
         $http({method: "GET", url: apiBaseUrl+"/checkins/statuses"})
             .success(function(data, status, headers, config) {
                 $rootScope.checkinStatuses = data;
+                $rootScope.checkinStatusesByValue = {};
+                for (var i in data) {
+                    $rootScope.checkinStatusesByValue[data[i].value] = data[i].label;
+                };
             })
             .error(function(data, status, headers, config) {
-                alert("failure getting statuses");
+                console.log(data);
             });
     }])
     .controller("WelcomeCtrl", ["$scope", "$location", "$rootScope", function($scope, $location, $rootScope) {
@@ -46,7 +53,7 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                     $location.path("/overview");
                 })
                 .error(function(data, status, headers, config) {
-                    alert("failure");
+                    console.log(data);
                 });
         };
     }])
@@ -66,7 +73,7 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                     $location.path("/overview");
                 })
                 .error(function(data, status, headers, config) {
-                    alert("failure");
+                    alert(data);
                 });
         };
     }])
@@ -77,7 +84,17 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 $scope.pastCheckins = data;
             })
             .error(function(data, status, headers, config) {
-                alert("failure");
+                // If the error message is that our JWT is outdated, log them out.
+                if (data.message == "Signature verification failed") $rootScope.logOut();
+            });
+        $http({method: "GET", url: apiBaseUrl+"/partners",
+               headers: {"Authorization": "JWT "+$rootScope.myJwt}})
+            .success(function(data, status, headers, config) {
+                $scope.partners = data;
+            })
+            .error(function(data, status, headers, config) {
+                // If the error message is that our JWT is outdated, log them out.
+                if (data.message == "Signature verification failed") $rootScope.logOut();
             });
     }])
     .controller("SubmitCheckinCtrl", ["$scope", "$http", "$location", "$rootScope", "apiBaseUrl", function($scope, $http, $location, $rootScope, apiBaseUrl) {
@@ -93,13 +110,14 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 }
             })
             .error(function(data, status, headers, config) {
-                alert("failure");
+                // If the error message is that our JWT is outdated, log them out.
+                if (data.message == "Signature verification failed") $rootScope.logOut();
             });
         // Give them a way to submit it.
         $scope.submitCheckin = function (checkin) {
-            // We need the label as well, so fetch it!
+            // We should automatically have the label, but make it an int.
             checkin.statusValue = parseInt(checkin.statusValue, 10);
-            checkin.statusLabel = $rootScope.checkinStatuses[checkin.statusValue];
+            checkin.statusLabel = $rootScope.checkinStatusesByValue[checkin.statusValue];
             // Submit the checkin with the label and value.
             $http({method: "POST", url: apiBaseUrl+"/checkins",
                    headers: {"Authorization": "JWT "+$rootScope.myJwt},
@@ -108,7 +126,8 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                     $location.path("/overview");
                 })
                 .error(function(data, status, headers, config) {
-                    alert("failure");
+                    // If the error message is that our JWT is outdated, log them out.
+                    if (data.message == "Signature verification failed") $rootScope.logOut();
                 });
         };
     }])
@@ -120,7 +139,8 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                 $scope.partnerEmails = data;
             })
             .error(function(data, status, headers, config) {
-                alert("failure to get partners");
+                // If the error message is that our JWT is outdated, log them out.
+                if (data.message == "Signature verification failed") $rootScope.logOut();
             });
         // Give them a way to update them.
         $scope.submitPartners = function (partnerEmails) {
@@ -131,7 +151,8 @@ angular.module("accountabilityHelper.controllers", ["base64", "ngCookies"])
                     $location.path("/overview");
                 })
                 .error(function(data, status, headers, config) {
-                    alert("failure");
+                    // If the error message is that our JWT is outdated, log them out.
+                    if (data.message == "Signature verification failed") $rootScope.logOut();
                 });
         };
     }]);

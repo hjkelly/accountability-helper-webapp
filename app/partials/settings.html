@@ -1,7 +1,15 @@
-<h2>Settings</h2>
-<form ng-submit="submitPartners(partnerEmails)">
-    <label for="partners">Accountability Partners</label>
-    <p>Your partners will get email notifications whenever you check in, and possibly other times as well.</p>
-    <p><input id="partners" ng-model="partnerEmails" ng-list /></p>
-    <p><input type="submit" value="Save" /></p>
-</form>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h1>Settings</h1>
+            <form ng-submit="submitPartners(partnerEmails)">
+                <div class="form-group">
+                    <label for="partners">Accountability Partners</label>
+                    <input id="partners" class="form-control" ng-model="partnerEmails" ng-list />
+                    <p class="help-block">Your partners will get email notifications whenever you check in, and possibly other times as well.</p>
+                </div>
+                <p><input class="btn btn-primary" type="submit" value="Save" /></p>
+            </form>
+        </div>
+    </div>
+</div>

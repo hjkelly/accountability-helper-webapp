@@ -1,14 +1,21 @@
-<form ng-submit="submitCheckin(checkin)">
-    <p>
-        How have things been since 
-        <span ng-show="!lastCheckinTimestamp">you signed up?</span>
-        <span ng-show="lastCheckinTimestamp">your last checkin, {{ lastCheckinTimestamp }}?</span>
-    </p>
-    <div>
-        <select ng-model="checkin.statusValue">
-            <option></option>
-            <option ng-repeat="s in checkinStatuses" value="{{$index}}">{{s}}</option>
-        </select>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h1>Check In</h1>
+            <form ng-submit="submitCheckin(checkin)">
+                <div class="form-group">
+                    <p>
+                        How have things been since 
+                        <span ng-show="!lastCheckinTimestamp">you signed up?</span>
+                        <span ng-show="lastCheckinTimestamp">your last checkin, {{ lastCheckinTimestamp }}?</span>
+                    </p>
+                    <select ng-model="checkin.statusValue" class="form-control">
+                        <option></option>
+                        <option ng-repeat="s in checkinStatuses" value="{{s.value}}">{{s.label}}</option>
+                    </select>
+                </div>
+                <input type="submit" class="btn btn-primary" />
+            </form>
+        </div>
     </div>
-    <div><input type="submit" /></div>
-</form>
+</div>
